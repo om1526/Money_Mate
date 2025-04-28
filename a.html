@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoneyMate - AI Chatbot</title>
+  <style>
+    /* Body Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #1a1a2e;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    img {
+      border-radius: 50px;
+    }  
+    /* Chat Container */
+    .chat-container {
+      width: 100%;
+      max-width: 400px;
+      background-color: #2c2c54;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Chat Header */
+    .chat-header {
+      background-color: #4b0082;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #6a0dad;
+    }
+    .chat-header .bot-icon {
+      width: 40px;
+      height: 40px;
+      margin-right: 12px;
+    }
+    .chat-title h2 {
+      font-size: 18px;
+      margin: 0;
+    }
+    .chat-title p {
+      font-size: 12px;
+      margin: 4px 0 0;
+      color: #bdbdbd;
+    }
+    /* Chat Box */
+    .chat-box {
+      padding: 20px;
+      height: 400px;
+      overflow-y: auto;
+      background-color: #1e1e3f;
+      scrollbar-width: thin;
+      scrollbar-color: #6a0dad #2c2c54;
+    }
+    .chat-box::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-box::-webkit-scrollbar-track {
+      background: #2c2c54;
+    }
+    .chat-box::-webkit-scrollbar-thumb {
+      background-color: #6a0dad;
+      border-radius: 10px;
+    }
+    .chat-box p {
+      margin: 5px 0;
+      padding: 10px 15px;
+      border-radius: 18px;
+      width: fit-content;
+      max-width: 75%;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #fff;
+    }
+    /* User and Bot Messages */
+    .user-message {
+      background-color: #4b0082;
+      margin-left: auto;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .bot-message {
+      background-color: #3d3d5c;
+      margin-right: auto;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    /* Input Area */
+    .input-area {
+      display: flex;
+      padding: 15px;
+      background-color: #1a1a2e;
+      border-top: 1px solid #3d3d5c;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #3d3d5c;
+      border-radius: 20px;
+      font-size: 16px;
+      outline: none;
+      background-color: #2c2c54;
+      color: #fff;
+      transition: border 0.3s ease;
+    }
+    .input-area input:focus {
+      border-color: #6a0dad;
+    }
+    .input-area button {
+      background-color: #6a0dad;
+      color: white;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-left: 10px;
+      font-size: 18px;
+      transition: background 0.3s ease;
+    }
+    .input-area button:hover {
+      background-color: #8a2be2;
+    }
+    /* Fade In Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Home button added at the top -->
+  <a href="mmatepage9.html" style="position: fixed; top: 10px; left: 10px; z-index: 1000; color: #fff; text-decoration: none; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px;">Home</a>
+  
+  <div class="chat-container">
+    <!-- Header with icon -->
+    <div class="chat-header">
+      <img src="1742057218188.jpg" alt="Bot Icon" class="bot-icon" />
+      <div class="chat-title">
+        <h2>MoneyMate</h2>
+        <p>Your personal finance assistant</p>
+      </div>
+    </div>
+  
+    <!-- Chat display -->
+    <div id="chat-box" class="chat-box"></div>
+  
+    <!-- Input area -->
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Type your message..." />
+      <button onclick="handleUserInput()">➤</button>
+    </div>
+  </div>
+  
+  <script>
+    // Function to display messages in the chat box
+    function displayMessage(message, isUser = false) {
+      const chatBox = document.getElementById('chat-box');
+      const messageElement = document.createElement('p');
+      messageElement.textContent = message;
+      messageElement.className = isUser ? 'user-message' : 'bot-message';
+      chatBox.appendChild(messageElement);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    
+    // Typing indicator functions
+    function showTypingIndicator() {
+      const chatBox = document.getElementById('chat-box');
+      const typingIndicator = document.createElement('p');
+      typingIndicator.textContent = 'MoneyMate is typing...';
+      typingIndicator.className = 'bot-message typing-indicator';
+      typingIndicator.id = 'typing-indicator';
+      chatBox.appendChild(typingIndicator);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    
+    function removeTypingIndicator() {
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) typingIndicator.remove();
+    }
+    
+    // Get user input and process it
+    function handleUserInput() {
+      const userInput = document.getElementById('user-input').value.trim();
+      if (!userInput) return;
+      
+      displayMessage(userInput, true);
+      document.getElementById('user-input').value = '';
+      
+      // Show typing indicator then process the input after a delay
+      showTypingIndicator();
+      setTimeout(() => {
+        removeTypingIndicator();
+      }, 1000);
+    }
+    
+    // Capture numeric choice directly from user input
+    function getValidChoice(options) {
+      return new Promise(resolve => {
+        const inputField = document.getElementById('user-input');
+        function handleEnter(event) {
+          if (event.key === 'Enter') {
+            const choice = parseInt(inputField.value);
+            if (options.includes(choice)) {
+              inputField.removeEventListener('keydown', handleEnter);
+              displayMessage(inputField.value, true);
+              inputField.value = '';
+              resolve(choice);
+            }
+          }
+        }
+        inputField.addEventListener('keydown', handleEnter);
+      });
+    }
+    
+    // Start Chat with initial greetings and menu options
+    async function startChat(isReturning = false) {
+      if (!isReturning) {
+        displayMessage("hi!!");
+        displayMessage("I am your personal MoneyMate chat bot.\nI can help you with money management issues.");
+      }
+      displayMessage("Please type the corresponding number of the question that you want to ask:");
+      displayMessage("1 - Regarding money management");
+      displayMessage("2 - Regarding where to save money");
+      displayMessage("3 - Investment tips");
+      displayMessage("4 - New ways to earn money");
+      displayMessage("0 - Go back to the first menu");
+      
+      let a = await getValidChoice([0, 1, 2, 3, 4]);
+      if (a === 1) {
+        handleMoneyManagement();
+      } else if (a === 2) {
+        handleWhereToSaveMoney();
+      } else if (a === 3) {
+        handleInvestmentTips();
+      } else if (a === 4) {
+        handleWaysToEarnMoney();
+      } else if (a === 0) {
+        startChat(true);
+      }
+    }
+    
+    // Handle Money Management conversation
+    async function handleMoneyManagement() {
+      displayMessage("Okay! Let's hear out your problem with money management.");
+      displayMessage("Please type the corresponding number of the question that you want to ask:");
+      displayMessage("1 - I tend to spend lots of money on wasteful things like entertainment, fashion, etc.");
+      displayMessage("2 - At the end of the month, I am unable to save any money for emergency situations.");
+      displayMessage("3 - Just tell me how to save money");
+      displayMessage("0 - Go back to the first menu");
+      
+      let b = await getValidChoice([0, 1, 2, 3]);
+      
+      if (b === 1) {
+        displayMessage("Tip: Track all your expenses using our MoneyMate app. Set a monthly budget for entertainment and fashion.");
+        displayMessage("Advice: Reduce impulse buys by setting up a waiting period before making purchases. Consider a 'no-spend' day or week each month.");
+      } else if (b === 2) {
+        displayMessage("Tip: First, track your monthly income and all expenses. If you're spending more than you're earning, reduce unnecessary expenses.");
+        displayMessage("Advice: Create a 'pay yourself first' system where you save a fixed percentage of your income as soon as you get paid, before spending on anything else.");
+      } else if (b === 3) {
+        displayMessage("Here are a few ways to save money:");
+        displayMessage("1. Set a savings goal (e.g., 20% of your monthly income).");
+        displayMessage("2. Automate your savings by setting up automatic transfers to your savings account.");
+        displayMessage("3. Eliminate high-interest debt to avoid wasting money on interest.");
+        displayMessage("4. Cut back on subscription services or things you don't use regularly.");
+      } else if (b === 0) {
+        startChat(true);
+        return;
+      }
+      
+      displayMessage("\nThank you for talking to MoneyMate!\nI hope you liked the responses of the questions and it clarifies your doughts regarding money managment.\nWould you like to continue?");
+      displayMessage("1 - Yes, continue talking");
+      displayMessage("2 - No, end the conversation");
+      
+      let continueChoice = await getValidChoice([1, 2]);
+      if (continueChoice === 1) {
+        startChat(true);
+      } else {
+        displayMessage("Thank you for using MoneyMate! Have a great day!");
+      }
+    }
+    
+    // Handle Where to Save Money conversation
+    async function handleWhereToSaveMoney() {
+      displayMessage("Okay! Let's talk about where you should save money.");
+      displayMessage("Please type the corresponding number of the question that you want to ask:");
+      displayMessage("1 - Should I keep my savings in a bank account?");
+      displayMessage("2 - Should I invest my savings in stocks or bonds?");
+      displayMessage("3 - What about emergency funds?");
+      displayMessage("0 - Go back to the first menu");
+      
+      let c = await getValidChoice([0, 1, 2, 3]);
+      
+      if (c === 1) {
+        displayMessage("Bank accounts are a safe place to keep your savings. You may want to choose a high-yield savings account to earn some interest.");
+        displayMessage("Tip: Look for accounts with no monthly fees and a high interest rate.");
+      } else if (c === 2) {
+        displayMessage("Investing in stocks or bonds can offer a higher return, but it also comes with risk. Consider consulting a financial advisor before making decisions and regularly see the stock news provided on our MoneyMate website.");
+        displayMessage("Tip: Diversify your investments to spread risk, and don't invest money you may need in the short term.");
+      } else if (c === 3) {
+        displayMessage("An emergency fund is crucial for unexpected expenses like medical bills or car repairs. Aim to save at least 3-6 months of living expenses.");
+        displayMessage("Tip: Keep your emergency fund in a liquid, easily accessible account, like a high-yield savings account.");
+      } else if (c === 0) {
+        startChat(true);
+        return;
+      }
+      
+      displayMessage("\nThank you for talking to MoneyMate!\nI hope you liked the responses of the questions and it clarifies your doughts regarding money managment.\nWould you like to continue?");
+      displayMessage("1 - Yes, continue talking");
+      displayMessage("2 - No, end the conversation");
+      
+      let continueChoice = await getValidChoice([1, 2]);
+      if (continueChoice === 1) {
+        startChat(true);
+      } else {
+        displayMessage("Thank you for using MoneyMate! Have a great day!");
+      }
+    }
+    
+    // Handle Investment Tips conversation
+    async function handleInvestmentTips() {
+      displayMessage("Okay! Let's talk about investment tips.");
+      displayMessage("Please type the corresponding number of the question that you want to ask:");
+      displayMessage("1 - What are stocks and how do they work?");
+      displayMessage("2 - What are bonds?");
+      displayMessage("3 - How do I start investing with little money?");
+      displayMessage("4 - Should I consider real estate investment?");
+      displayMessage("0 - Go back to the first menu");
+      
+      let d = await getValidChoice([0, 1, 2, 3, 4]);
+      
+      if (d === 1) {
+        displayMessage("Stocks represent ownership in a company. When you buy stock, you own a part of the company. Stocks can appreciate over time, but they also carry risks.");
+        displayMessage("Tip: Start with exchange-traded funds (ETFs) or index funds to diversify your portfolio and reduce risk.");
+      } else if (d === 2) {
+        displayMessage("Bonds are essentially loans you give to companies or governments. In exchange, you receive regular interest payments and the return of your principal when the bond matures.");
+        displayMessage("Tip: Bonds are generally less risky than stocks but offer lower returns. Consider adding them to diversify your portfolio.");
+      } else if (d === 3) {
+        displayMessage("You can start investing with little money by using a brokerage account that offers fractional shares, allowing you to invest with as little as $1.");
+        displayMessage("Tip: Look for low-cost, diversified options like index funds or ETFs. Consider dollar-cost averaging to invest small amounts regularly.");
+      } else if (d === 4) {
+        displayMessage("Real estate can be a great long-term investment. It provides passive income and has the potential to appreciate over time.");
+        displayMessage("Tip: Real estate requires substantial upfront capital. You can start by investing in REITs (Real Estate Investment Trusts) for exposure to real estate without needing large amounts of money.");
+      } else if (d === 0) {
+        startChat(true);
+        return;
+      }
+      
+      displayMessage("\nThank you for talking to MoneyMate!\nI hope you liked the responses of the questions and it clarifies your doughts regarding money managment.\nWould you like to continue?");
+      displayMessage("1 - Yes, continue talking");
+      displayMessage("2 - No, end the conversation");
+      
+      let continueChoice = await getValidChoice([1, 2]);
+      if (continueChoice === 1) {
+        startChat(true);
+      } else {
+        displayMessage("Thank you for using MoneyMate! Have a great day!");
+      }
+    }
+    
+    // Handle Ways to Earn Money conversation
+    async function handleWaysToEarnMoney() {
+      displayMessage("Okay! Let's talk about new ways to earn money.");
+      displayMessage("Please type the corresponding number of the question that you want to ask:");
+      displayMessage("1 - How can I start a side hustle?");
+      displayMessage("2 - Are there online jobs that I can do?");
+      displayMessage("3 - How can I make money through my skills or hobbies?");
+      displayMessage("0 - Go back to the first menu");
+      
+      let e = await getValidChoice([0, 1, 2, 3]);
+      
+      if (e === 1) {
+        displayMessage("Side hustles can be a great way to earn extra income. Consider freelancing, driving for a ride-share company, or selling products online.");
+        displayMessage("Tip: Choose a side hustle that aligns with your skills and interests. Start small and scale up over time.");
+      } else if (e === 2) {
+        displayMessage("There are many online jobs you can do, such as virtual assistance, content writing, tutoring, or customer service.");
+        displayMessage("Tip: Look for reputable platforms like Upwork, Fiverr, or LinkedIn to find online jobs.");
+      } else if (e === 3) {
+        displayMessage("If you have skills or hobbies like photography, writing, or crafts, you can sell your work on platforms like Etsy or start a blog or YouTube channel.");
+        displayMessage("Tip: Use social media to promote your work and grow an audience.");
+      } else if (e === 0) {
+        startChat(true);
+        return;
+      }
+      
+      displayMessage("\nThank you for talking to MoneyMate! I hope you liked the responses of the questions and it clarifies your doughts regarding money managment.");
+      displayMessage("\nWould you like to continue?");
+      displayMessage("1 - Yes, continue talking");
+      displayMessage("2 - No, end the conversation");
+      
+      let continueChoice = await getValidChoice([1, 2]);
+      if (continueChoice === 1) {
+        startChat(true);
+      } else {
+        displayMessage("Thank you for using MoneyMate! Have a great day!");
+      }
+    }
+    
+    // Start the chat when the page loads
+    startChat();
+  </script>
+</body>
+</html>
+
+
+
+
+
+

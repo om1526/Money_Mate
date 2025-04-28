@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Money Mate - Dashboard</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    /* RESET & BASIC STYLES */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      padding-bottom: 40px;
+      background: linear-gradient(-45deg, #16162a, #202033, #16162a, #1a1a2c);
+      background-size: 300% 300%;
+      animation: gradientShift 25s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* NAVBAR */
+    .navbar {
+      background: #000;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 101;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .nav-links {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 1rem;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+    .nav-links a:hover { color: #f5c518; }
+    /* DROPDOWN */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 200px;
+      background: #222;
+      border: 1px solid #333;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      display: flex;
+      flex-direction: column;
+    }
+    .dropdown-menu.show { transform: scaleY(1); }
+    .dropdown-menu a {
+      padding: 10px 15px;
+      text-align: left;
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid #333;
+      transition: background 0.3s, color 0.3s;
+    }
+    .dropdown-menu a:last-child { border-bottom: none; }
+    .dropdown-menu a:hover { background: #333; color: #f5c518; }
+    
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .welcome {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .welcome h2 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #f5c518;
+      text-shadow: 0 0 8px rgba(245,197,24,0.8);
+      transition: text-shadow 0.3s, filter 0.3s;
+    }
+    .welcome h2:hover {
+      text-shadow: 0 0 12px rgba(245,197,24,1);
+      filter: brightness(1.1);
+    }
+    .welcome p { font-size: 1.1rem; color: #ccc; }
+    
+    /* DASHBOARD SECTIONS */
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    .section-card {
+      background: #222;
+      border-radius: 10px;
+      padding: 25px 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
+      cursor: pointer;
+      overflow: hidden;
+      border: 2px solid transparent;
+      position: relative;
+      z-index: 1;
+    }
+    .section-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+      border-image: linear-gradient(135deg, #a569bd, #f5c518) 1;
+      border-image-slice: 1;
+    }
+    .section-card i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #a569bd;
+      transition: color 0.3s, transform 0.3s;
+    }
+    .section-card:hover i {
+      color: #f5c518;
+      transform: scale(1.05);
+    }
+    .section-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #d1c4e9, #9575cd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: filter 0.3s;
+    }
+    .section-card:hover h3 { filter: brightness(1.1); }
+    .section-card p {
+      font-size: 1rem;
+      color: #ccc;
+      line-height: 1.4;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: linear-gradient(135deg, #000, #111);
+      padding: 20px;
+      margin-top: 40px;
+      text-align: center;
+      color: #aaa;
+      border-top: 1px solid #444;
+    }
+    .social-icons { margin-bottom: 10px; }
+    .social-icons i {
+      font-size: 20px;
+      margin: 0 10px;
+      cursor: pointer;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .social-icons i:hover {
+      color: #f5c518;
+      text-shadow: 0 0 6px #f5c518;
+    }
+    @media (max-width: 768px) {
+      .welcome h2 { font-size: 2rem; }
+      .navbar h1 { font-size: 1.5rem; }
+      .section-card i { font-size: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <!-- Added separate Home button -->
+    <a href="mmatepage9.html">Home</a>
+    <div class="nav-links">
+      <div class="dropdown">
+        <a id="homeButton">Menu</a>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="mmext1.html">Expense Tracker</a>
+          <a href="mmatesm.html">Shift Management</a>
+          <a href="a.html">Your Personalized CA</a>
+          <a href="#billing">Billing & Invoices</a>
+          <a href="#team">Team Collaboration</a>
+        </div>
+      </div>
+      <a href="#">Logout</a>
+    </div>
+  </div>
+  
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+    <div class="welcome">
+      <h2>Welcome, [User Name]</h2>
+      <p>Manage your finances, shifts, and personalized CA—all in one place.</p>
+    </div>
+    
+    <!-- DASHBOARD SECTIONS -->
+    <div class="sections">
+      <!-- Expense Tracker card now redirects to mmext1.html on click -->
+      <div class="section-card" id="expense" onclick="window.location.href='mmext1.html'">
+        <i class="fas fa-chart-line"></i>
+        <h3>Expense Tracker</h3>
+        <p>View and analyze your expenses with real-time analytics and detailed reports.</p>
+      </div>
+      <!-- Other cards -->
+      <div class="section-card" id="shift" onclick="window.location.href='mmatesm.html'">
+        <i class="fas fa-user-clock"></i>
+        <h3>Shift Management</h3>
+        <p>Organize and track employee shifts efficiently with integrated scheduling tools.</p>
+      </div>
+      <div class="section-card" id="ca" onclick="window.location.href='a.html'">
+        <i class="fas fa-user-tie"></i>
+        <h3>Your Personalized CA</h3>
+        <p>Access tailored financial insights and advisory services designed for you.</p>
+      </div>
+      <div class="section-card" id="billing">
+        <i class="fas fa-wallet"></i>
+        <h3>Billing & Invoices</h3>
+        <p>Manage billing cycles, send invoices, and track payments seamlessly.</p>
+      </div>
+      <div class="section-card" id="team">
+        <i class="fas fa-user-friends"></i>
+        <h3>Team Collaboration</h3>
+        <p>Assign roles, coordinate tasks, and streamline communication with your team.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="social-icons">
+      <i class="fab fa-facebook"></i>
+      <i class="fab fa-twitter"></i>
+      <i class="fab fa-linkedin"></i>
+    </div>
+    <p>© 2025 Money Mate. All Rights Reserved.</p>
+  </div>
+  
+  <script>
+    // Persist theme across pages: check for stored preference
+    if(localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-theme");
+    }
+    const homeButton = document.getElementById('homeButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    homeButton.addEventListener('click', function(event) {
+      event.preventDefault();
+      dropdownMenu.classList.toggle('show');
+    });
+  </script>
+</body>
+</html>

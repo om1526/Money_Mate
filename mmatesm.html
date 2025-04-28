@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Money Mate - Shift Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    /* RESET & BASIC STYLES */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      background: linear-gradient(-45deg, #16162a, #202033, #16162a, #1a1a2c);
+      background-size: 300% 300%;
+      animation: gradientShift 25s ease infinite;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: #000;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 101;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .navbar .logo {
+      font-size: 1.8rem;
+      background: linear-gradient(45deg, #a569bd, #7b4d9e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 8px rgba(165,105,189,0.8);
+      transition: text-shadow 0.3s, filter 0.3s;
+    }
+    .navbar .logo:hover {
+      text-shadow: 0 0 12px rgba(165,105,189,1);
+      filter: brightness(1.1);
+    }
+    .navbar .nav-right a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+    .navbar .nav-right a:hover { color: #f5c518; }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .page-header h2 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #f5c518;
+      text-shadow: 0 0 8px rgba(245,197,24,0.8);
+      transition: text-shadow 0.3s, filter 0.3s;
+    }
+    .page-header p {
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+
+    /* SHIFT MANAGEMENT SECTIONS */
+    .shift-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    .shift-card {
+      background: #222;
+      border-radius: 10px;
+      padding: 25px 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
+      cursor: pointer;
+      overflow: hidden;
+      border: 2px solid transparent;
+    }
+    .shift-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      border-image: linear-gradient(135deg, #a569bd, #f5c518) 1;
+      border-image-slice: 1;
+    }
+    .shift-card i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #a569bd;
+      transition: color 0.3s, transform 0.3s;
+    }
+    .shift-card:hover i {
+      color: #f5c518;
+      transform: scale(1.05);
+    }
+    .shift-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #d1c4e9, #9575cd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: filter 0.3s;
+    }
+    .shift-card:hover h3 { filter: brightness(1.1); }
+    .shift-card p {
+      font-size: 1rem;
+      color: #ccc;
+      line-height: 1.4;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: linear-gradient(135deg, #000, #111);
+      padding: 20px;
+      text-align: center;
+      color: #aaa;
+      border-top: 1px solid #444;
+    }
+    .social-icons { margin-bottom: 10px; }
+    .social-icons i {
+      font-size: 20px;
+      margin: 0 10px;
+      cursor: pointer;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .social-icons i:hover {
+      color: #f5c518;
+      text-shadow: 0 0 6px #f5c518;
+    }
+    @media (max-width: 768px) {
+      .page-header h2 { font-size: 2rem; }
+      .navbar .logo { font-size: 1.5rem; }
+      .shift-card i { font-size: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="logo">Money Mate Dashboard</div>
+    <div class="nav-right">
+      <a href="mmatepage9.html">Home</a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Shift Management</h2>
+      <p>Manage employee scheduling, attendance, requests, and payroll all from one place.</p>
+    </div>
+
+    <!-- SHIFT MANAGEMENT FEATURES -->
+    <div class="shift-sections">
+      <div class="shift-card" onclick="window.location.href='shiftsg.html'">
+        <i class="fas fa-calendar-alt"></i>
+        <h3>Shift Scheduling</h3>
+        <p>Create, edit, and delete shifts using an intuitive calendar with drag-and-drop support. Easily assign employees.</p>
+      </div>
+      <div class="shift-card" onclick="window.location.href='mmateatt.html'">
+        <i class="fas fa-user-check"></i>
+        <h3>Attendance Tracking</h3>
+        <p>Monitor real-time check-ins/check-outs, automatically calculate working hours, and maintain detailed logs for auditing.</p>
+      </div>
+      <div class="shift-card">
+        <i class="fas fa-exchange-alt"></i>
+        <h3>Request Management</h3>
+        <p>Handle shift swap and leave/absence requests seamlessly with an integrated approval workflow to maintain smooth operations.</p>
+      </div>
+      <div class="shift-card">
+        <i class="fas fa-dollar-sign"></i>
+        <h3>Payroll Integration</h3>
+        <p>Automate salary calculations based on shift data, generate detailed payslips, and produce exportable payroll reports.</p>
+      </div>
+      <div class="shift-card">
+        <i class="fas fa-chart-line"></i>
+        <h3>Reports & Analytics</h3>
+        <p>Access real-time dashboards and comprehensive reports with visual graphs to analyze performance and trends.</p>
+      </div>
+      <div class="shift-card">
+        <i class="fas fa-bell"></i>
+        <h3>Notifications & Alerts</h3>
+        <p>Receive automated reminders and alerts for upcoming shifts, attendance anomalies, and pending approvals.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="social-icons">
+      <i class="fab fa-facebook"></i>
+      <i class="fab fa-twitter"></i>
+      <i class="fab fa-linkedin"></i>
+    </div>
+    <p>© 2025 Money Mate. All Rights Reserved.</p>
+  </div>
+</body>
+</html>

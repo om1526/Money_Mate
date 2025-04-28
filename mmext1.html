@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoneyMate - Expense Tracker</title>
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    /* NAVBAR */
+    .navbar {
+      width: 100%;
+      background: #2a2a40;
+      padding: 10px 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      z-index: 1000;
+    }
+    .navbar a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 16px;
+      margin-left: 20px;
+      transition: color 0.3s;
+    }
+    .navbar a:hover {
+      color: #f5c518;
+    }
+    /* BODY */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e2f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: 60px; /* Space for navbar */
+    }
+    /* MAIN CONTENT WRAPPER */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    /* CONTAINER */
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      width: 100%;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    /* EXPENSE TRACKER */
+    .tracker {
+      flex: 2;
+      background: #2a2a40;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .logo {
+      width: 40px;
+      vertical-align: middle;
+    }
+    .expense-form input, button {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #9b59b6;
+      border-radius: 5px;
+      background: #3b3b50;
+      color: white;
+    }
+    button {
+      background-color: #9b59b6;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #824ba3;
+    }
+    .warning {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .marquee {
+      color: red;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    /* EXPENSES LIST */
+    .expenses-container {
+      flex: 3;
+      background: #3a3a55;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    #expenses-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .expense-item {
+      background: #ffcc00;
+      color: #000;
+      padding: 10px;
+      border-radius: 5px;
+      min-width: 150px;
+      text-align: center;
+    }
+    /* CATEGORY CONTAINER */
+    .category-container {
+      flex: 1;
+      background: #3a3a55;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 300px;
+    }
+    .category-container h3 {
+      color: white;
+      margin-bottom: 10px;
+    }
+    .category-container ul {
+      list-style: none;
+      padding: 0;
+    }
+    .category-container ul li {
+      background: #9b59b6;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 4px;
+    }
+    .edit-btn, .delete-btn {
+      background: #ffcc00;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+    }
+    /* FOOTER */
+    footer {
+      background: #2a2a40;
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR WITH HOME BUTTON -->
+  <div class="navbar">
+      <a href="mmatepage9.html">Home</a>
+  </div>
+  
+  <div class="main-content">
+    <div class="container">
+      <!-- Expense Tracker -->
+      <div class="tracker">
+        <h1>MoneyMate <img src="1742057218188.jpg" alt="MoneyMate Logo" class="logo"></h1>
+        <div class="expense-form">
+          <input type="text" id="expense-name" placeholder="Enter Expense Name">
+          <input type="number" id="expense-amount" placeholder="Enter Expense Amount (INR)">
+          <input type="text" id="expense-category" placeholder="Category">
+          <input type="number" id="expense-quantity" placeholder="Quantity" min="1" value="1">
+          <button id="add-expense">Add Expense</button>
+          <button id="clear-expenses">Clear All Expenses</button>
+        </div>
+        <h2>Total Expenses: ₹<span id="total-expense">0</span></h2>
+        <div id="warning" class="warning"></div>
+      </div>
+    
+      <!-- Expenses List -->
+      <div class="expenses-container">
+        <h2>All Expenses</h2>
+        <div id="expenses-list"></div>
+      </div>
+      <!-- Expense Categories -->
+      <div class="category-container">
+        <h2>Expense Categories</h2>
+        <div id="category-list"></div>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    &copy; 2025 MoneyMate Expense Tracker. All rights reserved.
+  </footer>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const expenseName = document.getElementById("expense-name");
+      const expenseAmount = document.getElementById("expense-amount");
+      const expenseCategory = document.getElementById("expense-category");
+      const expenseQuantity = document.getElementById("expense-quantity");
+      const addExpenseBtn = document.getElementById("add-expense");
+      const clearExpensesBtn = document.getElementById("clear-expenses");
+      const expensesList = document.getElementById("expenses-list");
+      const warningDiv = document.getElementById("warning");
+      const totalExpenseSpan = document.getElementById("total-expense");
+      const categoryList = document.getElementById("category-list");
+  
+      let expenses = [];
+      let categories = {}; // Stores categories along with total spending
+  
+      // ✅ Add Expense Button Logic
+      addExpenseBtn.addEventListener("click", () => {
+        const name = expenseName.value.trim();
+        const amount = parseFloat(expenseAmount.value);
+        const category = expenseCategory.value.trim();
+        const quantity = parseInt(expenseQuantity.value);
+  
+        if (!name || isNaN(amount) || !category || isNaN(quantity) || quantity <= 0) {
+          alert("Please fill all fields correctly.");
+          return;
+        }
+  
+        const totalCost = amount * quantity;
+        expenses.push({ name, totalCost, category });
+  
+        // Update category expenses
+        if (!categories[category]) {
+          categories[category] = { total: 0, items: [] };
+          addCategoryToUI(category);
+        }
+        categories[category].items.push({ name, totalCost });
+        categories[category].total += totalCost;
+  
+        updateExpenses();
+        updateCategoriesUI();
+        checkWarnings();
+  
+        // Clear input fields
+        expenseName.value = "";
+        expenseAmount.value = "";
+        expenseCategory.value = "";
+        expenseQuantity.value = "1";
+      });
+  
+      // ✅ Clear Expenses Button Logic
+      clearExpensesBtn.addEventListener("click", () => {
+        expenses = [];
+        categories = {};
+        updateExpenses();
+        categoryList.innerHTML = "";
+        warningDiv.innerHTML = "";
+      });
+  
+      // ✅ Update Expenses in UI
+      function updateExpenses() {
+        expensesList.innerHTML = "";
+        let totalSpending = 0;
+  
+        expenses.forEach((expense) => {
+          totalSpending += expense.totalCost;
+          const div = document.createElement("div");
+          div.classList.add("expense-item");
+          div.innerHTML = `${expense.name} - ₹${expense.totalCost} <strong>(${expense.category})</strong>`;
+          expensesList.appendChild(div);
+        });
+  
+        totalExpenseSpan.innerText = totalSpending;
+  
+        if (totalSpending > 10000) {
+          warningDiv.innerHTML = '<marquee class="marquee">Bhai bus kar, kitna udayega paisa!</marquee>';
+        } else if (totalSpending < 100) {
+          warningDiv.innerHTML = "Good job!";
+        } else {
+          warningDiv.innerHTML = "";
+        }
+      }
+  
+      // ✅ Check Warnings
+      function checkWarnings() {
+        const totalSpending = expenses.reduce((sum, expense) => sum + expense.totalCost, 0);
+  
+        if (totalSpending > 10000) {
+          warningDiv.innerHTML = '<marquee class="marquee">Bhai bus kar, kitna udayega paisa!</marquee>';
+        } else if (totalSpending < 100) {
+          warningDiv.innerHTML = "Good job!";
+        } else {
+          warningDiv.innerHTML = "";
+        }
+      }
+  
+      // ✅ Add Category to UI
+      function addCategoryToUI(category) {
+        const categoryContainer = document.createElement("div");
+        categoryContainer.classList.add("category-container");
+        categoryContainer.innerHTML = `
+          <h3>${category} (Total: ₹<span id="total-${category}">0</span>)</h3>
+          <ul id="category-${category}"></ul>
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+        `;
+  
+        categoryList.appendChild(categoryContainer);
+  
+        // ✅ Edit Category Name
+        categoryContainer.querySelector(".edit-btn").addEventListener("click", () => {
+          const newCategory = prompt("Enter new category name:", category);
+          if (newCategory && newCategory !== category) {
+            categories[newCategory] = categories[category];
+            delete categories[category];
+            categoryContainer.querySelector("h3").innerHTML = `${newCategory} (Total: ₹<span id="total-${newCategory}">${categories[newCategory].total}</span>)`;
+            categoryContainer.querySelector("ul").setAttribute("id", `category-${newCategory}`);
+          }
+        });
+  
+        // ✅ Delete Category
+        categoryContainer.querySelector(".delete-btn").addEventListener("click", () => {
+          delete categories[category];
+          categoryContainer.remove();
+          updateExpenses();
+          updateCategoriesUI();
+        });
+      }
+  
+      // ✅ Update Category UI
+      function updateCategoriesUI() {
+        categoryList.innerHTML = "";
+  
+        for (let category in categories) {
+          addCategoryToUI(category);
+          const categoryUl = document.getElementById(`category-${category}`);
+          const categoryTotal = document.getElementById(`total-${category}`);
+  
+          categories[category].items.forEach((expense) => {
+            const li = document.createElement("li");
+            li.innerHTML = `${expense.name} - ₹${expense.totalCost}`;
+            categoryUl.appendChild(li);
+          });
+  
+          categoryTotal.innerText = categories[category].total;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
